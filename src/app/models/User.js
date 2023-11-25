@@ -1,4 +1,8 @@
+// eslint-disable-next-line import/no-extraneous-dependencies
 import Sequelize, { Model } from 'sequelize';
+
+// eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies
+const bcrypt = require('bcryptjs');
 
 class User extends Model {
     static init(sequelize) {
@@ -6,12 +10,20 @@ class User extends Model {
             {
                 name: Sequelize.STRING,
                 email: Sequelize.STRING,
+                password: Sequelize.VIRTUAL,
                 password_hash: Sequelize.STRING,
             },
             {
                 sequelize,
             }
         );
+
+        this.addHook('beforeSave', async (user) => {
+            if (user.password) {
+                user.password_hash = await bcrypt.hash(user.password, 8);
+            }
+        });
+        return this;
     }
 }
 export default User;
