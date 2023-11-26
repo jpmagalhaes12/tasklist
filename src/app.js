@@ -1,4 +1,6 @@
 import express from 'express';
+// eslint-disable-next-line import/no-extraneous-dependencies
+import cors from 'cors';
 import routes from './routes';
 
 import './database/index';
@@ -11,6 +13,7 @@ class App {
     }
 
     middlewares() {
+        this.server.use(cors());
         this.server.use(express.json());
     }
 
